@@ -1,0 +1,46 @@
+This is Johann Burkard's StringSearch library.   I couldn't find a public repo, so I simply created one.
+
+Thanks for sharing your work Mr. Burkard.
+
+More info http://johannburkard.de/software/stringsearch
+and in the API documentation
+
+From his website:
+StringSearch
+
+High-perfor­mance pattern matching algo­rithms in Java
+
+The Java language lacks fast string searching algorithms. StringSearch provides implementations of the Boyer-Moore and the Shift-Or (bit-parallel) algorithms. These algorithms are easily five to ten times faster than the naïve implementation found in java.lang.String. [repo creators note: Java doesn't use naïve string search]
+
+
+Johann Burkard
+SoftwareBlogAboutContact
+StringSearch
+
+High-perfor­mance pattern matching algo­rithms in Java
+
+The Java language lacks fast string searching algorithms. StringSearch provides implementations of the Boyer-Moore and the Shift-Or (bit-parallel) algorithms. These algorithms are easily five to ten times faster than the naïve implementation found in java.lang.String.
+
+
+Documentation
+
+	This library contains implementations of the following pattern matching algorithms:
+
+General purpose algorithms
+	BNDM
+	Boyer, Moore, Horspool
+	Boyer, Moore, Horspool, Raita
+	Boyer, Moore, Sunday
+	Shift-Or (Shift-And)
+Searching with wildcards (“don’t-care-symbols”)
+	BNDM Wildcards
+	Shift-Or Wildcards
+Searching with character classes
+	Shift-Or Classes
+Searching with mismatches
+	Shift-Or Mismatches
+
+
+License
+	StringSearch is licensed under the MIT License (OSI certified).
+

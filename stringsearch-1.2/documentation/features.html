@@ -1,0 +1,190 @@
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><!-- #BeginTemplate "/Templates/documentation.dwt" -->
+<head>
+<!-- #BeginEditable "doctitle" --> 
+<title>StringSearch - high-performance pattern matching algorithms in Java - documentation</title>
+<!-- #EndEditable -->
+<style type="text/css">
+body { background-color: #fff; color: #000; margin: 0px; padding: 0px }
+body>p { margin-top: 0px }
+table p:first-child, div, form { margin: 0px; padding: 0px }
+p,ul,ol,li,button,input,select,textarea,.form { color: #000; font-family: tahoma, helvetica, arial, sans-serif; font-size: 11px }
+ul { list-style: square }
+li { padding-top: 4px }
+pre,code { font-size: 11px }
+
+a { color: #668fcc; text-decoration: underline }
+a:link { color: #666 }
+a:visited { color: #666 }
+a:hover { color: #668FCC }
+a:active { color: #668FCC }
+
+#title { background-color: #334766; padding: 4px; border-bottom: 4px solid #ccc; height: 28px }
+#title p { padding-left: 12px; color: #fff; height: 28px }
+
+#content { margin-top: 32px }
+
+.section { }
+.sectionTitle { padding-left: 16px }
+.sectionBody { padding-left: 16px; padding-right: 10%; background-color: #f8f8f8; padding-top: 4px;
+ padding-bottom: 4px; border-bottom: 1px solid #BFD9FF }
+
+#footer { margin-left: 16px; margin-top: 32px }
+</style>
+<script type="text/javascript">
+// <![CDATA[
+var ie = (window.external) ? true : false;
+var mz = ((!ie) && (document.documentElement)) ? true : false;
+var nn = ((document.captureEvents) && (!document.getElementById)) ? true : false;
+var op = (navigator.userAgent.indexOf('Opera') != -1) ? true : false;
+
+if (nn) {
+ document.write('<style type="text/css">button,select,input,textarea,option,.form { border-width: 0px } p,ul,ol,li,button,input,select,textarea,.form { font-size: 12px } pre,code { font-size: 12px } .tabUp { background-color: #fff }<\/style>');
+}
+// ]]>
+</script>
+</head>
+<body>
+<a name="top"></a>
+<div id="title"> 
+ <p><!-- #BeginEditable "documentTitle" --><strong>StringSearch - high-performance 
+  pattern matching algorithms in Java - documentation</strong><!-- #EndEditable --></p>
+</div>
+<div id="content">
+ <div class="section"> 
+  <div class="sectionTitle"> 
+   <p><strong><!-- #BeginEditable "sectionTitle" --><a href="index.html">Table 
+    of contents</a> - 2. Features<!-- #EndEditable --></strong></p>
+  </div>
+  <div class="sectionBody"> <!-- #BeginEditable "sectionBody" --> 
+   <p>The StringSearch library - while being reasonably small - attempts to provide 
+    a variety of high-performance pattern matching algorithms for all common data 
+    types.</p>
+   <p>All algorithms search in bytes, chars and Strings. 
+    If accessing the underlying char array in String through Reflection 
+    is allowed, the overhead of cloning the char array is avoided 
+    if the text to search exceeds a certain length. This length is based on the 
+    speed of Reflection in the Java Virtual Machine used. The length is discovered 
+    when the com.eaio.stringsearch.StringSearch class is loaded. 
+    As of Release 1, performance data from the current Java Virtual Machines from 
+    Sun, IBM, BEA and Transvirtual is included.</p>
+   <p>StringSearch also contains a stripped-down version with only three algorithms 
+    called StringSearch-mini that is useful if few space is available. StringSearch-mini 
+    contains the BNDM, BNDM Wildcards and Boyer, Moore, Horspool, Raita algorithms 
+    in a JAR archive of only 10 KB size. StringSearch-mini does not use the native 
+    library.</p>
+   <p>StringSearch contains a native library that further accelerates searching 
+    in bytes. Release 1 contains precompiled versions for Microsoft 
+    Windows (NativeSearch.dll) and Linux (libNativeSearch.so). To use the native 
+    library, set the java.library.path accordingly. If the native 
+    library is in lib/, invoke your application through java 
+    -jar app.jar -Djava.library.path=lib. If the standard StringSearch 
+    library is used, the usesNative method may be called to find 
+    out if an algorithm uses the native library. This method is not included in 
+    StringSearch-mini.</p>
+   <p>All implementations are thread-safe - one instance can be used by as many 
+    threads as required.</p>
+   <p>The following table summarizes the differences between the two versions.</p>
+   <table border="0" cellspacing="1" cellpadding="0" width="86%">
+    <col width="40%"/> <col width="30%"/> <col width="30%"/> 
+    <tr> 
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p><strong>StringSearch</strong></p>
+     </td>
+     <td> 
+      <p><strong>StringSearch-mini</strong></p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>JAR archive size</p>
+     </td>
+     <td> 
+      <p>27 KB</p>
+     </td>
+     <td> 
+      <p>10 KB</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>Algorithms</p>
+     </td>
+     <td> 
+      <p>All</p>
+     </td>
+     <td> 
+      <p>Only 3</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>Use the native library if available</p>
+     </td>
+     <td> 
+      <p>Yes</p>
+     </td>
+     <td> 
+      <p>No</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>Has usesNative method</p>
+     </td>
+     <td> 
+      <p>Yes</p>
+     </td>
+     <td> 
+      <p>No</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>Classes include debug information</p>
+     </td>
+     <td> 
+      <p>Yes</p>
+     </td>
+     <td> 
+      <p>No</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>Non-core classes are obfuscated</p>
+     </td>
+     <td> 
+      <p>No</p>
+     </td>
+     <td> 
+      <p>Yes</p>
+     </td>
+    </tr>
+   </table>
+   <p><a href="introduction.html">Previous</a> | <a href="usage.html">Next</a></p>
+   <!-- #EndEditable --> </div>
+ </div>
+</div>
+<div id="footer"> 
+ <p><a href="copying.txt">Copyright</a> (c) 2003, 2004 Johann Burkard (<a href="mailto:jb@eaio.com">jb@eaio.com</a>) 
+  <a href="http://eaio.com">http://eaio.com</a></p>
+</div>
+<br />
+</body>
+<!-- #EndTemplate --></html>

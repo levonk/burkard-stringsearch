@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="StringSearch 1.2" basedir="." default="All">
+
+ <description>Building the StringSearch distribution.</description>
+
+
+ <!-- Compile with Jikes -->
+
+ <property name="build.compiler" value="jikes"/>
+
+
+ <!-- Locations -->
+
+ <property name="home" location="."/>
+
+ <property name="archive" value="archive"/>
+
+
+ <!-- Application info -->
+
+ <property name="app" value="StringSearch"/>
+ <property name="app.name" value="stringsearch"/>
+ <property name="app.version" value="1.2"/>
+
+
+ <!-- The ProGuard task -->
+
+ <taskdef name="proguard" classname="proguard.ant.ProGuardTask" classpath="proguard.jar"/>
+
+
+ <target name="Init">
+
+  <tstamp/>
+
+  <tstamp>
+   <format property="build.TIME" pattern="yyyyMMddHHmm"/>
+  </tstamp>
+
+ </target>
+
+
+ <target name="Archive" depends="Init">
+
+  <description>Archiving sources...</description>
+
+  <mkdir dir="archive"/>
+
+  <delete file="${archive}/${app.name}-${DSTAMP}.zip" quiet="true"/>
+  <delete file="${archive}/${app.name}-native-${DSTAMP}.zip" quiet="true"/>
+
+  <zip destfile="${archive}/${app.name}-${DSTAMP}.zip" basedir="src"/>
+  <zip destfile="${archive}/${app.name}-native-${DSTAMP}.zip" basedir="NativeSearch"/>
+
+ </target>
+
+ <target name="Prepare" depends="Archive">
+
+  <description>Preparing build...</description>
+
+  <buildnumber/>
+
+  <delete quiet="true">
+   <fileset dir="bin"/>
+   <fileset dir="mini"/>
+  </delete>
+
+  <mkdir dir="bin"/>
+  <mkdir dir="mini"/>
+
+ </target>
+
+ <target name="Compile" depends="Prepare">
+
+  <description>Compiling sources...</description>
+
+  <javac srcdir="src" destdir="bin">
+   <compilerarg line="-g:lines,vars,source"/>
+  </javac>
+
+  <copy todir="mini">
+   <fileset dir="src">
+    <include name="com/eaio/stringsearch/BNDM**"/>
+    <include name="com/eaio/stringsearch/BoyerMooreHorspoolRaita.java"/>
+    <include name="com/eaio/stringsearch/CharIntMap.java"/>
+    <include name="com/eaio/stringsearch/StringSearch.java"/>
+   </fileset>
+  </copy>
+
+  <replace file="mini/com/eaio/stringsearch/BNDM.java">
+   <replacetoken><![CDATA[/* comment:start */]]></replacetoken>
+   <replacevalue><![CDATA[/*]]></replacevalue>
+  </replace>
+
+  <replace file="mini/com/eaio/stringsearch/BNDM.java">
+   <replacetoken><![CDATA[/* comment:end */]]></replacetoken>
+   <replacevalue><![CDATA[*/]]></replacevalue>
+  </replace>
+
+  <replace file="mini/com/eaio/stringsearch/BoyerMooreHorspoolRaita.java">
+   <replacetoken><![CDATA[/* comment:start */]]></replacetoken>
+   <replacevalue><![CDATA[/*]]></replacevalue>
+  </replace>
+
+  <replace file="mini/com/eaio/stringsearch/BoyerMooreHorspoolRaita.java">
+   <replacetoken><![CDATA[/* comment:end */]]></replacetoken>
+   <replacevalue><![CDATA[*/]]></replacevalue>
+  </replace>
+
+  <replace file="mini/com/eaio/stringsearch/BoyerMooreHorspoolRaita.java">
+   <replacetoken><![CDATA[/* comment:remove]]></replacetoken>
+   <replacevalue></replacevalue>
+  </replace>
+
+  <replace file="mini/com/eaio/stringsearch/BoyerMooreHorspoolRaita.java">
+   <replacetoken><![CDATA[comment:remove */]]></replacetoken>
+   <replacevalue></replacevalue>
+  </replace>
+
+  <replace file="mini/com/eaio/stringsearch/StringSearch.java">
+   <replacetoken><![CDATA[/* comment:start */]]></replacetoken>
+   <replacevalue><![CDATA[/*]]></replacevalue>
+  </replace>
+
+  <replace file="mini/com/eaio/stringsearch/StringSearch.java">
+   <replacetoken><![CDATA[/* comment:end */]]></replacetoken>
+   <replacevalue><![CDATA[*/]]></replacevalue>
+  </replace>
+
+  <javac srcdir="mini" destdir="mini">
+   <compilerarg line="-g:none"/>
+  </javac>
+
+ </target>
+
+ <target name="Package">
+
+  <description>Making various components</description>
+
+  <delete file="${app.name}.jar" quiet="true"/>
+
+  <jar destfile="${app.name}.jar" index="true">
+   <fileset dir="bin">
+    <exclude name="test**/**"/>
+    <exclude name="**/test**/**"/>
+   </fileset>
+   <zipfileset prefix="META-INF" file="documentation/copying.txt"/>
+   <manifest>
+    <section name="com/eaio/stringsearch">
+     <attribute name="Sealed" value="true"/>
+     <attribute name="Implementation-Title" value="eaio: StringSearch - high-performance pattern matching algorithms in Java"/>
+     <attribute name="Implementation-Version" value="${app.version} (Build ${build.number} ${build.TIME})"/>
+     <attribute name="Implementation-Vendor" value="eaio (http://eaio.com)"/>
+    </section>
+   </manifest>
+  </jar>
+
+  <delete file="${app.name}-mini.jar" quiet="true"/>
+
+  <jar destfile="${app.name}-mini.jar" index="true">
+   <fileset dir="mini">
+    <include name="**/**.class"/>
+   </fileset>
+   <zipfileset prefix="META-INF" file="documentation/copying.txt"/>
+   <manifest>
+    <section name="com/eaio/stringsearch">
+     <attribute name="Sealed" value="true"/>
+     <attribute name="Implementation-Title" value="eaio: StringSearch-mini - high-performance pattern matching algorithms in Java"/>
+     <attribute name="Implementation-Version" value="${app.version} (Build ${build.number} ${build.TIME})"/>
+     <attribute name="Implementation-Vendor" value="eaio (http://eaio.com)"/>
+    </section>
+   </manifest>
+  </jar>
+
+  <proguard configuration="${app.name}.pro" verbose="true"/>
+
+  <delete file="${app.name}-${app.version}-mini.jar"/>
+
+  <move file="${app.name}-mini_o.jar" tofile="${app.name}-mini.jar"/>
+  
+  <!-- Build ZIP -->
+
+  <delete file="${app.name}-${app.version}.zip" quiet="true"/>
+
+  <zip destfile="${app.name}-${app.version}.zip">
+   <zipfileset prefix="${app.name}-${app.version}/src" dir="src">
+    <exclude name="test**/**"/>
+    <exclude name="**/test**/**"/>
+   </zipfileset>
+   <zipfileset prefix="${app.name}-${app.version}" file="build.xml"/>
+   <zipfileset prefix="${app.name}-${app.version}" file="${app.name}.jar"/>
+   <zipfileset prefix="${app.name}-${app.version}" file="${app.name}-mini.jar"/>
+   <zipfileset prefix="${app.name}-${app.version}/documentation" dir="documentation"/>
+   <zipfileset prefix="${app.name}-${app.version}/NativeSearch" dir="NativeSearch">
+    <exclude name="**/Debug/**"/>
+    <exclude name="**/Release/**"/>
+    <exclude name="**ncb"/>
+    <exclude name="**opt"/>
+    <exclude name="**obj"/>
+    <exclude name="**sbr"/>
+    <exclude name="**bsc"/>
+    <exclude name="**exp"/>
+    <exclude name="**lib"/>
+    <exclude name="**idb"/>
+    <exclude name="**res"/>
+    <exclude name="**aps"/>
+   </zipfileset>
+   <zipfileset prefix="${app.name}-${app.version}" dir="NativeSearch/Release">
+    <include name="**/**.dll"/>
+    <include name="**/**.so"/>
+   </zipfileset>
+  </zip>
+
+  <!-- Build .tar.gz -->
+
+  <delete file="${app.name}-${app.version}.tar**" quiet="true"/>
+
+  <tar destfile="${app.name}-${app.version}.tar">
+   <tarfileset prefix="${app.name}-${app.version}/src" dir="src">
+    <exclude name="test**/**"/>
+    <exclude name="**/test**/**"/>
+   </tarfileset>
+   <tarfileset prefix="${app.name}-${app.version}" file="build.xml"/>
+   <tarfileset prefix="${app.name}-${app.version}" file="${app.name}.jar"/>
+   <tarfileset prefix="${app.name}-${app.version}" file="${app.name}-mini.jar"/>
+   <tarfileset prefix="${app.name}-${app.version}/documentation" dir="documentation"/>
+   <tarfileset prefix="${app.name}-${app.version}/NativeSearch" dir="NativeSearch">
+    <exclude name="**/Debug/**"/>
+    <exclude name="**/Release/**"/>
+    <exclude name="**ncb"/>
+    <exclude name="**opt"/>
+    <exclude name="**obj"/>
+    <exclude name="**sbr"/>
+    <exclude name="**bsc"/>
+    <exclude name="**exp"/>
+    <exclude name="**lib"/>
+    <exclude name="**idb"/>
+    <exclude name="**res"/>
+    <exclude name="**aps"/>
+    <!-- .tar.gz specific excludes -->
+    <exclude name="config.guess"/>
+    <exclude name="config.sub"/>
+    <exclude name="configure"/>
+    <exclude name="install.sh"/>
+    <exclude name="build"/>
+    <exclude name="clean"/>
+   </tarfileset>
+   <tarfileset prefix="${app.name}-${app.version}/NativeSearch" dir="NativeSearch" mode="755">
+    <include name="config.guess"/>
+    <include name="config.sub"/>
+    <include name="configure"/>
+    <include name="install.sh"/>
+    <include name="build"/>
+    <include name="clean"/>
+   </tarfileset>
+   <tarfileset prefix="${app.name}-${app.version}" dir="NativeSearch/Release">
+    <include name="**/**.dll"/>
+    <include name="**/**.so"/>
+   </tarfileset>
+  </tar>
+
+  <gzip zipfile="${app.name}-${app.version}.tar.gz" src="${app.name}-${app.version}.tar"/>
+
+  <delete file="${app.name}-${app.version}.tar" quiet="true"/>
+
+ </target>
+
+ <target name="Apidocs">
+
+  <description>Creating Apidocs...</description>
+
+  <delete quiet="true">
+   <fileset dir="documentation/apidoc"/>
+  </delete>
+
+  <mkdir dir="documentation/apidoc"/>
+
+  <javadoc destdir="documentation/apidoc" version="true" author="true" use="true" public="yes" link="http://java.sun.com/j2se/1.4.2/docs/api">
+   <packageset dir="src">
+    <exclude name="test**/**"/>
+    <exclude name="**/test**/**"/>
+   </packageset>
+  </javadoc>
+
+ </target>
+
+ <target name="All" depends="Archive, Compile, Package"/>
+
+</project>

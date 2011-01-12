@@ -1,0 +1,469 @@
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><!-- #BeginTemplate "/Templates/documentation.dwt" -->
+<head>
+<!-- #BeginEditable "doctitle" --> 
+<title>StringSearch - high-performance pattern matching algorithms in Java - documentation</title>
+<!-- #EndEditable -->
+<style type="text/css">
+body { background-color: #fff; color: #000; margin: 0px; padding: 0px }
+body>p { margin-top: 0px }
+table p:first-child, div, form { margin: 0px; padding: 0px }
+p,ul,ol,li,button,input,select,textarea,.form { color: #000; font-family: tahoma, helvetica, arial, sans-serif; font-size: 11px }
+ul { list-style: square }
+li { padding-top: 4px }
+pre,code { font-size: 11px }
+
+a { color: #668fcc; text-decoration: underline }
+a:link { color: #666 }
+a:visited { color: #666 }
+a:hover { color: #668FCC }
+a:active { color: #668FCC }
+
+#title { background-color: #334766; padding: 4px; border-bottom: 4px solid #ccc; height: 28px }
+#title p { padding-left: 12px; color: #fff; height: 28px }
+
+#content { margin-top: 32px }
+
+.section { }
+.sectionTitle { padding-left: 16px }
+.sectionBody { padding-left: 16px; padding-right: 10%; background-color: #f8f8f8; padding-top: 4px;
+ padding-bottom: 4px; border-bottom: 1px solid #BFD9FF }
+
+#footer { margin-left: 16px; margin-top: 32px }
+</style>
+<script type="text/javascript">
+// <![CDATA[
+var ie = (window.external) ? true : false;
+var mz = ((!ie) && (document.documentElement)) ? true : false;
+var nn = ((document.captureEvents) && (!document.getElementById)) ? true : false;
+var op = (navigator.userAgent.indexOf('Opera') != -1) ? true : false;
+
+if (nn) {
+ document.write('<style type="text/css">button,select,input,textarea,option,.form { border-width: 0px } p,ul,ol,li,button,input,select,textarea,.form { font-size: 12px } pre,code { font-size: 12px } .tabUp { background-color: #fff }<\/style>');
+}
+// ]]>
+</script>
+</head>
+<body>
+<a name="top"></a>
+<div id="title"> 
+ <p><!-- #BeginEditable "documentTitle" --><strong>StringSearch - high-performance 
+  pattern matching algorithms in Java - documentation</strong><!-- #EndEditable --></p>
+</div>
+<div id="content">
+ <div class="section"> 
+  <div class="sectionTitle"> 
+   <p><strong><!-- #BeginEditable "sectionTitle" --><a href="index.html">Table 
+    of contents</a> - 3. Usage<!-- #EndEditable --></strong></p>
+  </div>
+  <div class="sectionBody"> <!-- #BeginEditable "sectionBody" --> 
+   <p>To use the StringSearch library, make sure that the stringsearch.jar or 
+    stringsearch-mini.jar is on your classpath. Then, create an instance of the 
+    desired algorithm and use it's searchBytes, searchChars and searchString methods. 
+    These methods will return an int containing the position at which the pattern 
+    was found and -1 if the pattern was not found. If the native library is used 
+    and values lower than -1 are returned, the Java Virtual Machine may be running 
+    out of memory.</p>
+   <pre>StringSearch s = new &lt;Algorithm&gt;;<br>int s.searchBytes(&lt;text&gt;, &lt;pattern&gt;);<br>int s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;);
+int s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;);
+int s.searchChars(&lt;text&gt;, &lt;pattern&gt;);
+int s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;);
+int s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;);
+int s.searchString(&lt;text&gt;, &lt;pattern&gt;);
+int s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;);
+int s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;);</pre>
+   <p>Because all algorithms pre-process the pattern, you might want to retrieve 
+    the pre-processed pattern if it is used more than once:</p>
+   <pre>StringSearch s = new &lt;Algorithm&gt;;
+
+Object o = s.processBytes(&lt;pattern&gt;);
+Object o = s.processChars(&lt;pattern&gt;);
+Object o = s.processString(&lt;pattern&gt;);
+
+int s.searchBytes(&lt;text&gt;, &lt;pattern&gt;, o);
+int s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;, o);
+int s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;, o);
+int s.searchChars(&lt;text&gt;, &lt;pattern&gt;, o);
+int s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;, o);
+int s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;, o);
+int s.searchString(&lt;text&gt;, &lt;pattern&gt;, o);
+int s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;, o);
+int s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;, o);</pre>
+   <p>Algorithms for searching with mismatches allow searching with a certain 
+    editing distance and return an int array of size 2 where the first int contains 
+    the position at which the pattern was found and the second int containing 
+    the number of mismatches.</p>
+   <pre>MismatchSearch s = new &lt;Algorithm&gt;;
+
+
+int[] s.searchBytes(&lt;text&gt;, &lt;pattern&gt;);<br>int[] s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;);
+int[] s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;);
+int[] s.searchChars(&lt;text&gt;, &lt;pattern&gt;);
+int[] s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;);
+int[] s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;);
+int[] s.searchString(&lt;text&gt;, &lt;pattern&gt;);
+int[] s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;);
+int[] s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;);
+
+int[] s.searchBytes(&lt;text&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);<br>int[] s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);
+int[] s.searchBytes(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);
+int[] s.searchChars(&lt;text&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);
+int[] s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);
+int[] s.searchChars(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);
+int[] s.searchString(&lt;text&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);
+int[] s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);
+int[] s.searchString(&lt;text&gt;, &lt;start&gt;, &lt;end&gt;, &lt;pattern&gt;, &lt;editing distance&gt;);</pre>
+   <p>The following table summarizes the different algorithms.</p>
+   <table width="86%" border="0" cellspacing="1" cellpadding="0">
+    <tr> 
+     <td> 
+      <p>Algorithm</p>
+     </td>
+     <td> 
+      <p>Class name</p>
+     </td>
+     <td> 
+      <p>Maximum pattern length</p>
+     </td>
+     <td> 
+      <p><acronym title="searchByte methods uses the native library if possible">searchBytes 
+       native</acronym></p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#bndm">BNDM</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.BNDM</p>
+     </td>
+     <td> 
+      <p>32 characters</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#bndmwildcards">BNDM Wildcards</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.BNDMWildcards</p>
+     </td>
+     <td> 
+      <p>32 character</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#boyermoorehorspool">Boyer, Moore, Horspool</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.BoyerMooreHorspool</p>
+     </td>
+     <td> 
+      <p>not limited</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#boyermoorehorspoolraita">Boyer, Moore, Horspool, Raita</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.BoyerMooreHorspoolRaita</p>
+     </td>
+     <td> 
+      <p>not limited</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#boyermooresunday">Boyer, Moore, Horspool, Sunday</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.BoyerMooreSunday</p>
+     </td>
+     <td> 
+      <p>not limited</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#shiftor">Shift-Or</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.ShiftOr</p>
+     </td>
+     <td> 
+      <p>31 characters</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#shiftorclasses">Shift-Or Classes</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.ShiftOrClasses</p>
+     </td>
+     <td> 
+      <p>31 characters</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#shiftorwildcards">Shift-Or Wildcards</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.ShiftOrWildcards</p>
+     </td>
+     <td> 
+      <p>31 characters</p>
+     </td>
+     <td> 
+      <p>yes</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+     <td> 
+      <p>&nbsp;</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><a href="#shiftormismatches">Shift-Or Mismatches</a></p>
+     </td>
+     <td> 
+      <p>com.eaio.stringsearch.ShiftOrMismatches</p>
+     </td>
+     <td> 
+      <p><a href="#shiftormismatches">depending on number of mismatches</a></p>
+     </td>
+     <td> 
+      <p>no</p>
+     </td>
+    </tr>
+   </table>
+   <p><a name="bndm">BNDM</a></p>
+   <p>BNDM is currently limited to 32 characters. If the pattern is longer than 
+    32 characters, only it's first 32 characters will be processed.</p>
+   <p>Example code:</p>
+   <pre>BNDM b = new BNDM();
+int a = b.searchString("hello BNDM", 1, "BNDM");</pre>
+   <p><a name="bndmwildcards">BNDM Wildcards</a></p>
+   <p>BNDM Wildcards is currently limited to 32 characters. If the pattern is 
+    longer than 32 characters, only it's first 32 characters will be processed.</p>
+   <p>Example code:</p>
+   <pre>BNDMWildcards b = new BNDMWildcards();
+Object o = b.processString(&quot;BN??W?ldc?rds&quot;);
+int pos = b.searchString(&quot;hello BNDMWildcards!&quot;, &quot;BN??W?ldc?rds&quot;, o);</pre>
+   <p>If another symbol than ? should be used as wildcard charater, the static 
+    wildcard field in com.eaio.stringsearch.BNDMWildcards may be changed.</p>
+   <pre>BNDMWildcards.wildcard = '*';
+System.out.println(new BNDMWildcards().searchString("Hah0ha", "*ah*h"));</pre>
+   <p>Or the pattern may be pre-processed using a different wildcard character.</p>
+   <pre>BNDMWildcards b = new BNDMWildcards();
+Object o = b.processString("hih.h.", '.');
+int x = b.searchString("hihohehaa", "hih.h.", o);</pre>
+   <p><a name="boyermoorehorspool">Boyer, Moore, Horspool</a></p>
+   <p>The Boyer, Moore, Horspool algorithm's native searchBytes method is usually 
+    the fastest. For all other cases, the <a href="#boyermoorehorspoolraita">Boyer, 
+    Moore, Horspool, Raita</a> algorithm is faster.</p>
+   <p>Example code:</p>
+   <pre>BoyerMooreHorspool bmh = new BoyerMooreHorspool();
+Object o = bmh.processBytes("BoyerMooreHorspool".getBytes());
+int pos = bmh.searchBytes("hello BoyerMooreHorspool!".getBytes(), 1, 24, "BoyerMooreHorspool".getBytes(), o);</pre>
+   <p><a name="boyermoorehorspoolraita">Boyer, Moore, Horspool, Raita</a></p>
+   <p>The improvements of Timo Raita accelerate the Boyer, Moore, Horspool algorithm 
+    for the searchBytes and searchChars methods. This makes the Boyer, Moore, 
+    Horspool, Raita the fastest algorithm in this library.</p>
+   <p>Example code:</p>
+   <pre>StringSearch so = new BoyerMooreHorspoolRaita();
+int x = so.searchChars(&quot;hello mpeg and wavelet&quot;.toCharArray(), 5, &quot;wavelet&quot;.substring(0, 4).toCharArray());</pre>
+   <p><a name="boyermooresunday">Boyer, Moore, Sunday</a></p>
+   <p>This algorithm implements Sunday's &quot;Quick Search&quot; algorithm. It's 
+    speed is comparable with the other Boyer-Moore variants.</p>
+   <p>Example code:</p>
+   <pre>BoyerMooreSunday bms = new BoyerMooreSunday();
+System.out.println(bms.searchString(&quot;mpeg-4, mpeg-2, mpeg-1&quot;, &quot;mpeg-2&quot;));</pre>
+   <p><a name="shiftor">Shift-Or</a></p>
+   <p>The Shift-Or algorithm's pattern length is currently limited to at most 
+    31 characters. If the pattern is longer, only it's first 31 characters will 
+    be processed. The Shift-Or algorithm is not recommended as a general-purpose 
+    pattern matching algorithm because of it's relatively low speed.</p>
+   <p>Example code:</p>
+   <pre>ShiftOr so = new ShiftOr();
+int x = so.searchBytes(&quot;hihi hihi haha&quot;.getBytes(), &quot;hah&quot;.getBytes());</pre>
+   <p><a name="shiftorclasses">Shift-Or Classes</a></p>
+   <p>The Shift-Or Classes algorithm currently supports the following character 
+    classes:</p>
+   <table style="border: 1px solid #ccc" cellpadding="4">
+    <tr> 
+     <td> 
+      <p><em>x</em></p>
+     </td>
+     <td> 
+      <p>a character from the Alphabet &Sigma;</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><em>?</em></p>
+     </td>
+     <td> 
+      <p>a &quot;don't care&quot; symbol which matches all symbols</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>[<em>characters</em>]</p>
+     </td>
+     <td> 
+      <p>a class of characters where ranges (a-z, 0-9) are allowed</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p><em>^</em></p>
+     </td>
+     <td> 
+      <p>the negation of a class(^a, ^[abc], ^[c-h])</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>\</p>
+     </td>
+     <td> 
+      <p>escapes the next character (\ must be written as \\ in Java).</p>
+     </td>
+   </table>
+   <p>Example code:</p>
+   <pre>ShiftOrClasses so = new ShiftOrClasses();
+int l;
+l = so.searchString("shift-or with character classes", "classes");
+l = so.searchString(&quot;shift-or with character classes&quot;, &quot;cl[aeiou]sses&quot;);
+l = so.searchString(&quot;shift-or with character classes&quot;, &quot;?ar?act^ar&quot;);
+l = so.searchString(&quot;shift-or with character classes&quot;, &quot;[a-z]r ?it^[aeiou]&quot;);</pre>
+   <p><a name="shiftorwildcards">Shift-Or Wildcards</a></p>
+   <p>Shift-Or Wildcards is currently limited to 31 characters. If the pattern 
+    is longer than 31 characters, only it's first 31 characters will be processed. 
+    For speed reasons, the <a href="#bndmwildcards">BNDM Wildcards</a> algorithm 
+    should be preferred.</p>
+   <p>Example code:</p>
+   <pre>ShiftOrWildcards sow = new ShiftOrWildcards();
+Object o = sow.processString(&quot;r??ll? n?t s?r?&quot;);
+int x = sow.searchString(&quot;i am really not sure&quot;, &quot;r??ll? n?t s?r?&quot;, o);</pre>
+   <p>If another symbol than ? should be used as wildcard charater, the static 
+    wildcard field in com.eaio.stringsearch.ShiftOrWildcards may be changed.</p>
+   <pre>ShiftOrWildcards.wildcard = '*';
+System.err.println(new ShiftOrWildcards().searchString("boahah", "*a*"));</pre>
+   <p>Or the pattern may be pre-processed using a different wildcard character.</p>
+   <pre>ShiftOrWildcards sow = new ShiftOrWildcards();
+Object o = sow.processChars(&quot;bl*b&quot;.toCharArray(), '*');
+int k = sow.searchString("blaablob", &quot;bl*b&quot;, o);</pre>
+   <p><a name="shiftormismatches">Shift-Or Mismatches</a></p>
+   <p>Shift-Or Mismatches can currently handle only patterns of the following 
+    lengths:</p>
+   <table style="border: 1px solid #ccc" cellpadding="4">
+    <tr> 
+     <td> 
+      <p>Editing distance (k)</p>
+     </td>
+     <td> 
+      <p>Maximum pattern length</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>0</p>
+     </td>
+     <td> 
+      <p>31</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>1</p>
+     </td>
+     <td> 
+      <p>15</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>2-3</p>
+     </td>
+     <td> 
+      <p>10</p>
+     </td>
+    </tr>
+    <tr> 
+     <td> 
+      <p>4-5</p>
+     </td>
+     <td> 
+      <p>7</p>
+     </td>
+    </tr>
+   </table>
+   <p>Example code:</p>
+   <pre>ShiftOrMismatches som = new ShiftOrMismatches();
+int[] x = som.searchString(&quot;Hell0 Mp3g&quot;, &quot;mpeg&quot;, 2);
+System.out.print(&quot;Found at &quot; + x[0]);
+System.out.println(&quot; with &quot; + x[1] + &quot; errors.&quot;);</pre>
+   <p>For performance details, please see the included performance tests (<a href="benchmark/benchmark.sxc">OpenOffice</a>, 
+    <a href="benchmark/benchmark.xls">Microsoft Office</a>, <a href="benchmark/benchmark.pdf">PDF</a>).</p>
+   <p><a href="features.html">Previous</a> | <a href="changes.html">Next</a></p>
+   <!-- #EndEditable --> </div>
+ </div>
+</div>
+<div id="footer"> 
+ <p><a href="copying.txt">Copyright</a> (c) 2003, 2004 Johann Burkard (<a href="mailto:jb@eaio.com">jb@eaio.com</a>) 
+  <a href="http://eaio.com">http://eaio.com</a></p>
+</div>
+<br />
+</body>
+<!-- #EndTemplate --></html>
